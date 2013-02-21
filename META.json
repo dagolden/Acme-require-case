@@ -42,6 +42,7 @@
          "requires" : {
             "Carp" : "0",
             "Path::Tiny" : "0",
+            "Sub::Uplevel" : "0",
             "strict" : "0",
             "version" : "0.87",
             "warnings" : "0"
@@ -62,7 +63,7 @@
    "provides" : {
       "Acme::require::case" : {
          "file" : "lib/Acme/require/case.pm",
-         "version" : "0.003"
+         "version" : "0.004"
       }
    },
    "release_status" : "stable",
@@ -77,6 +78,6 @@
          "web" : "https://github.com/dagolden/acme-require-case"
       }
    },
-   "version" : "0.003"
+   "version" : "0.004"
 }
 

@@ -18,6 +18,6 @@ allow = refs
 [-InputOutput::ProhibitTwoArgOpen]
 [-Modules::ProhibitEvilModules]
 
-# Turn this on
-[Lax::ProhibitStringyEval::ExceptForRequire]
+# Turn this off
+[-Lax::ProhibitStringyEval::ExceptForRequire]
 
