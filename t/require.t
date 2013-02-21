@@ -47,13 +47,15 @@ like( $err, qr{Compilation failed}, "dies.pm: caught reload exception" );
 $err = exception { require false };
 like(
     $err,
-    qr{false\.pm did not return true value},
+    qr{false\.pm did not return a true value},
     "false.pm: caught false return"
 );
 
 my @output = split "\n", capture { require wrapper };
-like( $output[0], qr/^0 wrapper/, "saw wrapper first in call stack" );
-like( $output[1], qr/^1 main /,   "saw main next in call stack" );
+my $oops = 0;
+like( $output[0], qr/^0 wrapper/, "saw wrapper first in call stack" ) or $oops++;
+like( $output[1], qr/^1 main /,   "saw main next in call stack" ) or $oops++;
+diag( "OUTPUT:\n", join("\n", @output) ) if $oops;
 
 $err = exception { require only_once };
 is( $err, undef, "only_once: required OK" );
