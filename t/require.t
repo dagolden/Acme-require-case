@@ -7,8 +7,13 @@ use lib 't/lib';
 
 use Acme::require::case;
 
-my $err = exception { require foo };
-like( $err, qr/incorrect case/, "caught wrong case" );
+my $err;
+
+$err = exception { require foo };
+like( $err, qr/incorrect case/, "foo: caught wrong case" );
+
+$err = exception { require Foo::bar::Baz };
+like( $err, qr/incorrect case/, "Foo::bar::Baz: caught wrong case" );
 
 done_testing;
 # COPYRIGHT
