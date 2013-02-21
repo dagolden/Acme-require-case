@@ -1,7 +1,7 @@
 use 5.008001;
 use strict;
 use warnings;
-no warnings 'once';
+no warnings qw/once redefine/;
 
 package Acme::require::case;
 # ABSTRACT: Make Perl's require case-sensitive
@@ -9,9 +9,8 @@ package Acme::require::case;
 
 use Carp qw/croak/;
 use Path::Tiny;
+use Sub::Uplevel ();
 use version 0.87;
-
-*CORE::GLOBAL::require = \&require_casely;
 
 sub require_casely {
     my ($filename) = @_;
@@ -35,7 +34,9 @@ sub require_casely {
                 my ($valid, $actual) = _case_correct( $prefix, $filename );
                 if ( $valid ) {
                     $INC{$filename} = $realfilename;
-                    $result = do $realfilename;
+                    # uplevel so calling package looks right
+                    my $caller = caller(0);
+                    $result = eval qq{ package $caller; Sub::Uplevel::uplevel(3, sub { do \$realfilename }) };
                     last ITER;
                 }
                 else {
@@ -75,6 +76,8 @@ sub _case_correct {
     }
     return ($valid, $search->relative($prefix));
 }
+
+*CORE::GLOBAL::require = \&require_casely;
 
 1;
 

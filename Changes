@@ -2,6 +2,10 @@ Revision history for Acme-require-case
 
 {{$NEXT}}
 
+    [FIXED]
+
+    - file being required now sees proper package as its caller
+
 0.003     2013-02-21 10:48:48 America/New_York
 
     [CHANGED]
