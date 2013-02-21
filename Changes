@@ -2,6 +2,8 @@ Revision history for Acme-require-case
 
 {{$NEXT}}
 
+0.002     2013-02-21 08:57:00 America/New_York
+
     [CHANGED]
 
     - s/die/croak/
