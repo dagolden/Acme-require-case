@@ -14,8 +14,13 @@ use version;
 
 sub require_casely {
     my ($filename) = @_;
-    if ($filename =~ /^\d/) {
-        CORE::require $filename;
+    # looks like a version number check
+    if ( my $v = eval { version->parse($filename) } ) {
+        if ( $v > $^V ) {
+            my $which = $v->normal;
+            die "Perl $which required--this is only $^V, stopped";
+        }
+        return 1;
     }
     if ( exists $INC{$filename} ) {
         return 1 if $INC{$filename};
@@ -23,7 +28,7 @@ sub require_casely {
     }
     my ( $realfilename, $result );
     ITER: {
-        foreach my $prefix ( map { path($_) } @INC) {
+        foreach my $prefix ( map { path($_) } @INC ) {
             $realfilename = $prefix->child($filename);
             if ( $realfilename->is_file ) {
                 if ( _case_correct( $prefix, $filename ) ) {
@@ -38,7 +43,7 @@ sub require_casely {
         }
         die "Can't find $filename in \@INC (\@INC contains @INC)";
     }
-    if ($@ || $!) {
+    if ( $@ || $! ) {
         $INC{$filename} = undef;
         die $@ ? $@ : $!;
     }
@@ -51,12 +56,11 @@ sub require_casely {
     }
 }
 
-
 sub _case_correct {
-    my ($prefix, $filename) = @_;
+    my ( $prefix, $filename ) = @_;
     my @parts = split qr{/}, $filename;
-    while (my $p = shift @parts) {
-        if ( grep { $p eq $_} map { $_->basename } $prefix->children ) {
+    while ( my $p = shift @parts ) {
+        if ( grep { $p eq $_ } map { $_->basename } $prefix->children ) {
             $prefix = $prefix->child($p);
         }
         else {
