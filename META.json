@@ -62,7 +62,7 @@
    "provides" : {
       "Acme::require::case" : {
          "file" : "lib/Acme/require/case.pm",
-         "version" : "0.002"
+         "version" : "0.003"
       }
    },
    "release_status" : "stable",
@@ -77,6 +77,6 @@
          "web" : "https://github.com/dagolden/acme-require-case"
       }
    },
-   "version" : "0.002"
+   "version" : "0.003"
 }
 

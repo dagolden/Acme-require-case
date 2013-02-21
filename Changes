@@ -2,6 +2,10 @@ Revision history for Acme-require-case
 
 {{$NEXT}}
 
+    [CHANGED]
+
+    - improved error message with a suggestion for proper case
+
 0.002     2013-02-21 08:57:00 America/New_York
 
     [CHANGED]
