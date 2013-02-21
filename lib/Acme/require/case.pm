@@ -8,30 +8,39 @@ package Acme::require::case;
 # VERSION
 
 use Path::Tiny;
+use version;
 
 *CORE::GLOBAL::require = \&require_casely;
 
 sub require_casely {
     my ($filename) = @_;
+    if ($filename =~ /^\d/) {
+        CORE::require $filename;
+    }
     if ( exists $INC{$filename} ) {
         return 1 if $INC{$filename};
         die "Compilation failed in require";
     }
     my ( $realfilename, $result );
     ITER: {
-        foreach my $prefix (@INC) {
-            $realfilename = "$prefix/$filename";
-            if ( -f $realfilename ) {
-                $INC{$filename} = $realfilename;
-                $result = do $realfilename;
-                last ITER;
+        foreach my $prefix ( map { path($_) } @INC) {
+            $realfilename = $prefix->child($filename);
+            if ( $realfilename->is_file ) {
+                if ( _case_correct( $prefix, $filename ) ) {
+                    $INC{$filename} = $realfilename;
+                    $result = do $realfilename;
+                    last ITER;
+                }
+                else {
+                    die "$filename has incorrect case at $prefix";
+                }
             }
         }
-        die "Can't find $filename in \@INC";
+        die "Can't find $filename in \@INC (\@INC contains @INC)";
     }
-    if ($@) {
+    if ($@ || $!) {
         $INC{$filename} = undef;
-        die $@;
+        die $@ ? $@ : $!;
     }
     elsif ( !$result ) {
         delete $INC{$filename};
@@ -40,6 +49,21 @@ sub require_casely {
     else {
         return $result;
     }
+}
+
+
+sub _case_correct {
+    my ($prefix, $filename) = @_;
+    my @parts = split qr{/}, $filename;
+    while (my $p = shift @parts) {
+        if ( grep { $p eq $_} map { $_->basename } $prefix->children ) {
+            $prefix = $prefix->child($p);
+        }
+        else {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 1;
