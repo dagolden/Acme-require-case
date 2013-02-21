@@ -100,7 +100,7 @@ case-insensitive filesystems.
 To be effective, it should be loaded as early as possible, perhaps on the
 command line:
 
-    perl -MAcme::require:;case myprogram.pl
+    perl -MAcme::require::case myprogram.pl
 
 You certainly don't want to run this in production, but it might be good for
 your editor's compile command, or in C<PERL5OPT> during testing.
@@ -111,6 +111,10 @@ If you're really daring you can stick it in your shell:
 
 This module walks the filesystem checking case for every C<require>, so
 it is significantly slower than the built-in C<require> function.
+
+Global C<require> overrides are slightly buggy prior to Perl 5.12.  If you
+really care about such things, load L<Lexical::SealRequireHints> after
+you load this one.
 
 =cut
 
