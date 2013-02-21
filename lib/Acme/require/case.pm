@@ -53,7 +53,7 @@ sub require_casely {
     }
     elsif ( !$result ) {
         delete $INC{$filename};
-        croak "$filename did not return true value";
+        croak "$filename did not return a true value";
     }
     else {
         return $result;
