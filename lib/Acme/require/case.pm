@@ -36,7 +36,8 @@ sub require_casely {
                     $INC{$filename} = $realfilename;
                     # uplevel so calling package looks right
                     my $caller = caller(0);
-                    $result = eval qq{ package $caller; Sub::Uplevel::uplevel(3, sub { do \$realfilename }) };
+                    my $packaged_do = eval qq{ package $caller; sub { my \$r = do \$_[0]; \$r } };
+                    $result = Sub::Uplevel::uplevel( 2, $packaged_do, $realfilename);
                     last ITER;
                 }
                 else {
