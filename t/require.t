@@ -35,8 +35,14 @@ like( $err, qr/\Qv6.0.0\E required--this is only/, "v6: failed" );
 $err = exception { require "v6.pm" };
 like( $err, qr/Can't find v6\.pm/, "v6.pm: required OK" );
 
+$err = exception { require 5 };
+is( $err, undef, "5: required OK" );
+
 $err = exception { require dies };
 like( $err, qr{error at t/lib/dies\.pm}, "dies.pm: caught exception" );
+
+$err = exception { require dies };
+like( $err, qr{Compilation failed}, "dies.pm: caught reload exception" );
 
 $err = exception { require false };
 like(
@@ -48,6 +54,12 @@ like(
 my @output = split "\n", capture { require wrapper };
 like( $output[0], qr/^0 wrapper/, "saw wrapper first in call stack" );
 like( $output[1], qr/^1 main /,   "saw main next in call stack" );
+
+$err = exception { require only_once };
+is( $err, undef, "only_once: required OK" );
+$err = exception { require only_once };
+is( $err, undef, "only_once: required again without dying" );
+
 
 done_testing;
 # COPYRIGHT
