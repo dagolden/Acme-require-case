@@ -50,6 +50,7 @@
       },
       "test" : {
          "requires" : {
+            "Capture::Tiny" : "0",
             "ExtUtils::MakeMaker" : "0",
             "File::Find" : "0",
             "File::Spec::Functions" : "0",
@@ -63,7 +64,7 @@
    "provides" : {
       "Acme::require::case" : {
          "file" : "lib/Acme/require/case.pm",
-         "version" : "0.004"
+         "version" : "0.005"
       }
    },
    "release_status" : "stable",
@@ -78,6 +79,6 @@
          "web" : "https://github.com/dagolden/acme-require-case"
       }
    },
-   "version" : "0.004"
+   "version" : "0.005"
 }
 
