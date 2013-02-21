@@ -4,11 +4,11 @@ use warnings;
 no warnings 'once';
 
 package Acme::require::case;
-# ABSTRACT: Make Perl's require case sensitive
+# ABSTRACT: Make Perl's require case-sensitive
 # VERSION
 
 use Path::Tiny;
-use version;
+use version 0.87;
 
 *CORE::GLOBAL::require = \&require_casely;
 
@@ -72,24 +72,36 @@ sub _case_correct {
 
 1;
 
-=for Pod::Coverage method_names_here
+=for Pod::Coverage require_casely
 
 =head1 SYNOPSIS
 
   use Acme::require::case;
 
+  use MooX::Types::Mooselike::Base; # should be 'MooseLike'
+
+  # dies with: MooX/Types/Mooselike/Base.pm has incorrect case...
+
 =head1 DESCRIPTION
 
-This module might be cool, but you'd never know it from the lack
-of documentation.
+This module overrides C<CORE::GLOBAL::require> to make a case-sensitive check
+for its argument.  This prevents C<require foo> from loading "Foo.pm" on
+case-insensitive filesystems.
 
-=head1 USAGE
+To be effective, it should be loaded as early as possible, perhaps on the
+command line:
 
-Good luck!
+    perl -MAcme::require:;case myprogram.pl
 
-=head1 SEE ALSO
+You certainly don't want to run this in production, but it might be good for
+your editor's compile command, or in C<PERL5OPT> during testing.
 
-Maybe other modules do related things.
+If you're really daring you can stick it in your shell:
+
+    export PERL5OPT=-MAcme::require::case
+
+This module walks the filesystem checking case for every C<require>, so
+it is significantly slower than the built-in C<require> function.
 
 =cut
 
