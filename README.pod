@@ -22,8 +22,9 @@ This module overrides C<CORE::GLOBAL::require> to make a case-sensitive check
 for its argument.  This prevents C<require foo> from loading "Foo.pm" on
 case-insensitive filesystems.
 
-To be effective, it should be loaded as early as possible, perhaps on the
-command line:
+It does not respect any prior C<require> overrides, since it completely
+replaces C<require> semantics.  Therefore, it should be loaded as early as
+possible, perhaps on the command line:
 
     perl -MAcme::require::case myprogram.pl
 
