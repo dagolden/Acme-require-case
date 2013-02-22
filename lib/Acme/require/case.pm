@@ -36,7 +36,7 @@ sub require_casely {
                     $INC{$filename} = $realfilename;
                     # uplevel so calling package looks right
                     my $caller = caller(0);
-                    my $packaged_do = eval qq{ package $caller; sub { do \$_[0] } };
+                    my $packaged_do = eval qq{ package $caller; sub { local %^H; do \$_[0] } };
                     $result = Sub::Uplevel::uplevel( 2, $packaged_do, $realfilename);
                     last ITER;
                 }
