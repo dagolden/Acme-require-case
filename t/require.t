@@ -33,7 +33,7 @@ $err = exception { require v6 };
 like( $err, qr/\Qv6.0.0\E required--this is only/, "v6: failed" );
 
 $err = exception { require "v6.pm" };
-like( $err, qr/Can't find v6\.pm/, "v6.pm: required OK" );
+like( $err, qr/Can't locate v6\.pm/, "v6.pm: required OK" );
 
 $err = exception { require 5 };
 is( $err, undef, "5: required OK" );

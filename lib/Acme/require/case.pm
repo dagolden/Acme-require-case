@@ -45,7 +45,7 @@ sub require_casely {
                 }
             }
         }
-        croak "Can't find $filename in \@INC (\@INC contains @INC)";
+        croak "Can't locate $filename in \@INC (\@INC contains @INC)";
     }
     if ( $@ ) {
         $INC{$filename} = undef;

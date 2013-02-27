@@ -7,6 +7,8 @@ Revision history for Acme-require-case
     - localize %^H (fixes some bugs on Perls < 5.12);
       Not as good as Lexical::SealRequireHints, but passable
 
+    - corrected error message to match perl's
+
 0.005     2013-02-21 17:37:11 America/New_York
 
     [FIXED]
