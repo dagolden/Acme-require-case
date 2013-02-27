@@ -4,7 +4,7 @@
       "David Golden <dagolden@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.300029, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Dist::Zilla version 4.300030, CPAN::Meta::Converter version 2.120921",
    "license" : [
       "apache_2_0"
    ],
@@ -64,7 +64,7 @@
    "provides" : {
       "Acme::require::case" : {
          "file" : "lib/Acme/require/case.pm",
-         "version" : "0.005"
+         "version" : "0.006"
       }
    },
    "release_status" : "stable",
@@ -79,6 +79,7 @@
          "web" : "https://github.com/dagolden/acme-require-case"
       }
    },
-   "version" : "0.005"
+   "version" : "0.006",
+   "x_contributors" : []
 }
 
