@@ -16,13 +16,16 @@ use version 0.87;
 
 sub require_casely {
     my ($filename) = @_;
-    # looks like a version number check
-    if ( my $v = eval { version->parse($filename) } ) {
-        if ( $v > $^V ) {
-            my $which = $v->normal;
-            croak "Perl $which required--this is only $^V, stopped";
+    if ( _looks_like_version($filename) ) {
+        if ( isvstring($filename) || version::is_lax($filename) ) {
+            my $v = version->new($filename);
+            croak "Perl @{[$v->normal]} required--this is only $^V, stopped"
+            if $v > $^V;
+            return 1;
         }
-        return 1;
+        else {
+            croak "Invalid version format (non-numeric data)";
+        }
     }
     if ( exists $INC{$filename} ) {
         return 1 if $INC{$filename};
@@ -33,13 +36,13 @@ sub require_casely {
         foreach my $prefix ( map { path($_) } @INC ) {
             $realfilename = $prefix->child($filename);
             if ( $realfilename->is_file ) {
-                my ($valid, $actual) = _case_correct( $prefix, $filename );
-                if ( $valid ) {
+                my ( $valid, $actual ) = _case_correct( $prefix, $filename );
+                if ($valid) {
                     $INC{$filename} = $realfilename;
                     # uplevel so calling package looks right
-                    my $caller = caller(0);
+                    my $caller      = caller(0);
                     my $packaged_do = eval qq{ package $caller; sub { local %^H; do \$_[0] } };
-                    $result = uplevel( 2, $packaged_do, $realfilename);
+                    $result = uplevel( 2, $packaged_do, $realfilename );
                     last ITER;
                 }
                 else {
@@ -49,7 +52,7 @@ sub require_casely {
         }
         croak "Can't locate $filename in \@INC (\@INC contains @INC)";
     }
-    if ( $@ ) {
+    if ($@) {
         $INC{$filename} = undef;
         croak $@;
     }
@@ -65,9 +68,9 @@ sub require_casely {
 
 sub _case_correct {
     my ( $prefix, $filename ) = @_;
-    my $search = path($prefix); # clone
-    my @parts = split qr{/}, $filename;
-    my $valid = 1;
+    my $search = path($prefix);         # clone
+    my @parts  = split qr{/}, $filename;
+    my $valid  = 1;
     while ( my $p = shift @parts ) {
         if ( grep { $p eq $_ } map { $_->basename } $search->children ) {
             $search = $search->child($p);
@@ -78,7 +81,13 @@ sub _case_correct {
             $search = $search->child($actual);
         }
     }
-    return ($valid, $search->relative($prefix));
+    return ( $valid, $search->relative($prefix) );
+}
+
+sub _looks_like_version {
+    my ($v) = @_;
+    return 1 if isvstring($v);
+    return B::svref_2object( \$v )->FLAGS & ( B::SVp_NOK | B::SVp_IOK );
 }
 
 *CORE::GLOBAL::require = \&require_casely;
