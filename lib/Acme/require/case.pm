@@ -56,6 +56,7 @@ sub require_casely {
         croak "$filename did not return a true value";
     }
     else {
+        $! = 0;
         return $result;
     }
 }
