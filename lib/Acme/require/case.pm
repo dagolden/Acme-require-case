@@ -7,9 +7,11 @@ package Acme::require::case;
 # ABSTRACT: Make Perl's require case-sensitive
 # VERSION
 
+use B;
 use Carp qw/croak/;
-use Path::Tiny;
-use Sub::Uplevel ();
+use Path::Tiny qw/path/;
+use Scalar::Util qw/isvstring/;
+use Sub::Uplevel qw/uplevel/;
 use version 0.87;
 
 sub require_casely {
@@ -37,7 +39,7 @@ sub require_casely {
                     # uplevel so calling package looks right
                     my $caller = caller(0);
                     my $packaged_do = eval qq{ package $caller; sub { local %^H; do \$_[0] } };
-                    $result = Sub::Uplevel::uplevel( 2, $packaged_do, $realfilename);
+                    $result = uplevel( 2, $packaged_do, $realfilename);
                     last ITER;
                 }
                 else {
