@@ -17,15 +17,11 @@ use version 0.87;
 sub require_casely {
     my ($filename) = @_;
     if ( _looks_like_version($filename) ) {
-        if ( isvstring($filename) || version::is_lax($filename) ) {
-            my $v = version->new($filename);
-            croak "Perl @{[$v->normal]} required--this is only $^V, stopped"
+        my $v = eval { version->new($filename) };
+        croak $@ if $@;
+        croak "Perl @{[$v->normal]} required--this is only $^V, stopped"
             if $v > $^V;
-            return 1;
-        }
-        else {
-            croak "Invalid version format (non-numeric data)";
-        }
+        return 1;
     }
     if ( exists $INC{$filename} ) {
         return 1 if $INC{$filename};
