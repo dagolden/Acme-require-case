@@ -86,7 +86,7 @@ like( $err, qr/Can't locate 6/, "\$n = '6': caught can't locate" );
 {
     no warnings 'numeric';
     $err = exception { $n = "6a"; require $n if $n > 0 };
-    like( $err, qr/Invalid version format/, "\$n = '6a': require numerized \$n caught invalid version" );
+    like( $err, qr/Invalid version format|this is only/, "\$n = '6a': require numerized \$n caught invalid version" );
 }
 
 #--------------------------------------------------------------------------#

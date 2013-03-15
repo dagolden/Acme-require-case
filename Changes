@@ -2,6 +2,11 @@ Revision history for Acme-require-case
 
 {{$NEXT}}
 
+    [FIXED]
+
+    - fixed test for Perl 5.10.0 and older with latest
+      version.pm
+
 0.007     2013-02-28 11:19:55 America/New_York
 
     [FIXED]
