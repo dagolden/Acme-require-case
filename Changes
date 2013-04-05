@@ -2,6 +2,10 @@ Revision history for Acme-require-case
 
 {{$NEXT}}
 
+    [FIXED]
+
+    - Fixed bug where absolute paths could not be loaded
+
 0.008     2013-03-15 09:56:52 America/New_York
 
     [FIXED]

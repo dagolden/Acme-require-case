@@ -16,38 +16,53 @@ use version 0.87;
 
 sub require_casely {
     my ($filename) = @_;
+    my ( $realfilename, $result, $valid, $actual );
+
+    # Are we checking a version number?
     if ( _looks_like_version($filename) ) {
         my $v = eval { version->new($filename) };
         croak $@ if $@;
         croak "Perl @{[$v->normal]} required--this is only $^V, stopped"
-            if $v > $^V;
+          if $v > $^V;
         return 1;
     }
+
+    # Is it already loaded?
     if ( exists $INC{$filename} ) {
         return 1 if $INC{$filename};
         croak "Compilation failed in require";
     }
-    my ( $realfilename, $result );
-    ITER: {
+
+    # Absolute or relative?
+    if ( path($filename)->is_absolute ) {
+        ( $valid, $actual ) = ( 1, $filename );
+        $realfilename = path($filename);
+    }
+    else {
         foreach my $prefix ( map { path($_) } @INC ) {
             $realfilename = $prefix->child($filename);
             if ( $realfilename->is_file ) {
-                my ( $valid, $actual ) = _case_correct( $prefix, $filename );
-                if ($valid) {
-                    $INC{$filename} = $realfilename;
-                    # uplevel so calling package looks right
-                    my $caller      = caller(0);
-                    my $packaged_do = eval qq{ package $caller; sub { local %^H; do \$_[0] } };
-                    $result = uplevel( 2, $packaged_do, $realfilename );
-                    last ITER;
-                }
-                else {
-                    croak "$filename has incorrect case (maybe you want $actual instead?)";
-                }
+                ( $valid, $actual ) = _case_correct( $prefix, $filename );
+                last;
             }
         }
-        croak "Can't locate $filename in \@INC (\@INC contains @INC)";
+        croak "Can't locate $filename in \@INC (\@INC contains @INC)"
+            unless $actual;
     }
+
+    # Valid case or invalid?
+    if ($valid) {
+        $INC{$filename} = $realfilename;
+        # uplevel so calling package looks right
+        my $caller      = caller(0);
+        my $packaged_do = eval qq{ package $caller; sub { local %^H; do \$_[0] } };
+        $result = uplevel( 2, $packaged_do, $realfilename );
+    }
+    else {
+        croak "$filename has incorrect case (maybe you want $actual instead?)";
+    }
+
+    # Loaded correctly or not?
     if ($@) {
         $INC{$filename} = undef;
         croak $@;
