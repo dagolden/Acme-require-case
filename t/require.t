@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Test::More 0.96;
 use Test::Fatal;
+use Test::FailWarnings;
 use Capture::Tiny qw/capture/;
 use File::Spec;
 use lib 't/lib';
