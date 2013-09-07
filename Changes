@@ -2,6 +2,10 @@ Revision history for Acme-require-case
 
 {{$NEXT}}
 
+    [META]
+
+    - Updated distribution metadata
+
 0.009     2013-04-05 04:57:54 America/New_York
 
     [FIXED]
