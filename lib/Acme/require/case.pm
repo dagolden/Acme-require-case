@@ -47,15 +47,16 @@ sub require_casely {
             }
         }
         croak "Can't locate $filename in \@INC (\@INC contains @INC)"
-            unless $actual;
+          unless $actual;
     }
 
     # Valid case or invalid?
     if ($valid) {
         $INC{$filename} = $realfilename;
         # uplevel so calling package looks right
-        my $caller      = caller(0);
-        my $packaged_do = eval qq{ package $caller; sub { local %^H; do \$_[0] } };
+        my $caller = caller(0);
+        my $packaged_do =
+          eval qq{ package $caller; sub { local %^H; do \$_[0] } }; ## no critic
         $result = uplevel( 2, $packaged_do, $realfilename );
     }
     else {
