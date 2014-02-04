@@ -2,6 +2,10 @@ Revision history for Acme-require-case
 
 {{$NEXT}}
 
+    [FIXED]
+
+    - Avoids polluting %INC with absolute paths of modules loaded
+
 0.011     2013-09-25 11:22:15 America/New_York
 
     [FIXED]
