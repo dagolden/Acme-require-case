@@ -2,6 +2,11 @@ Revision history for Acme-require-case
 
 {{$NEXT}}
 
+    [CHANGED]
+
+    - Hooks in @INC were never supported properly.  They are now fatal
+      if encountered.
+
 0.012     2014-02-04 14:07:34-05:00 America/New_York
 
     [FIXED]

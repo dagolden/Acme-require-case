@@ -40,11 +40,17 @@ sub require_casely {
         $realfilename = path($filename);
     }
     else {
-        foreach my $prefix ( map { path($_) } @INC ) {
-            $realfilename = $prefix->child($filename);
-            if ( $realfilename->is_file ) {
-                ( $valid, $actual ) = _case_correct( $prefix, $filename );
-                last;
+        foreach my $inc (@INC) {
+            if ( ref $inc ) {
+                croak "Acme::require::case does not support refs in \@INC";
+            }
+            else {
+                my $prefix = path($inc);
+                $realfilename = $prefix->child($filename);
+                if ( $realfilename->is_file ) {
+                    ( $valid, $actual ) = _case_correct( $prefix, $filename );
+                    last;
+                }
             }
         }
         croak "Can't locate $filename in \@INC (\@INC contains @INC)"
@@ -132,6 +138,8 @@ replaces C<require> semantics.  Therefore, it should be loaded as early as
 possible, perhaps on the command line:
 
     perl -MAcme::require::case myprogram.pl
+
+It does not support hooks in C<@INC> and will croak if any are found.
 
 You certainly don't want to run this in production, but it might be good for
 your editor's compile command, or in C<PERL5OPT> during testing.
