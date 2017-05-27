@@ -6,7 +6,7 @@ no warnings qw/once redefine/;
 package Acme::require::case;
 # ABSTRACT: Make Perl's require case-sensitive
 
-our $VERSION = '0.013';
+our $VERSION = '0.014';
 
 use B;
 use Carp qw/croak/;
